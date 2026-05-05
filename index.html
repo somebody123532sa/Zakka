@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>GameStore - Jual Beli Akun Game</title>
+  <!-- Font Awesome 6 untuk ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: background 0.3s;
+    }
+
+    /* Container utama simulasi layar HP */
+    .app-container {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+      border-radius: 0;
+    }
+
+    @media (min-width: 431px) {
+      body {
+        background: #e8f5e9;
+      }
+      .app-container {
+        border-radius: 30px;
+        margin: 20px auto;
+        min-height: calc(100vh - 40px);
+        max-height: 95vh;
+      }
+    }
+
+    /* ===== ANIMASI ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .animate-slide-down {
+      animation: slideDown 0.5s ease forwards;
+    }
+
+    /* ===== HALAMAN (page) ===== */
+    .page {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      background: white;
+    }
+    .page.active {
+      display: block;
+    }
+
+    /* ===== LOGIN & REGISTER ===== */
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 30px 25px;
+      background: linear-gradient(135deg, #00aa13 0%, #00880c 40%, #00c853 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      top: -80px;
+      right: -80px;
+      animation: float 6s ease-in-out infinite;
+    }
+    .auth-container::after {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      bottom: -60px;
+      left: -60px;
+      animation: float 5s ease-in-out infinite reverse;
+    }
+    .auth-card {
+      background: white;
+      border-radius: 24px;
+      padding: 30px 25px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      position: relative;
+      z-index: 2;
+      animation: fadeInUp 0.7s ease;
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .auth-logo i {
+      font-size: 50px;
+      color: #00aa13;
+      background: #e8f5e9;
+      padding: 18px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .auth-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1b5e20;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    .auth-subtitle {
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .input-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .input-group i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #00aa13;
+      font-size: 16px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 15px 15px 15px 44px;
+      border: 2px solid #e0e0e0;
+      border-radius: 14px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background: #fafafa;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: #00aa13;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(0,170,19,0.08);
+    }
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 0.5px;
+    }
+    .btn-primary {
+      background: #00aa13;
+      color: white;
+      box-shadow: 0 8px 20px rgba(0,170,19,0.35);
+    }
+    .btn-primary:hover {
+      background: #00880c;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0,170,19,0.45);
+    }
+    .btn-outline {
+      background: white;
+      color: #00aa13;
+      border: 2px solid #00aa13;
+      margin-top: 12px;
+    }
+    .btn-outline:hover {
+      background: #e8f5e9;
+    }
+    .auth-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+    .auth-link a {
+      color: #00aa13;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .auth-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      background: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 20px;
+      color: #00aa13;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .navbar-brand i {
+      font-size: 28px;
+    }
+    .navbar-menu {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-game-btn {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: none;
+      background: #f0f0f0;
+      color: #333;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .nav-game-btn:hover, .nav-game-btn.active {
+      background: #00aa13;
+      color: white;
+    }
+
+    /* ===== HEADER SAMPUL ===== */
+    .cover-header {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2e7d32;
+      font-size: 18px;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover-header i {
+      font-size: 60px;
+      opacity: 0.6;
+      margin-right: 15px;
+    }
+    .cover-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #00aa13;
+    }
+    .cover-text {
+      background: rgba(255,255,255,0.8);
+      padding: 10px 20px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ===== KONTEN UTAMA ===== */
+    .content {
+      padding: 20px 16px;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1b5e20;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: fadeInUp 0.5s ease;
+    }
+    .section-title i {
+      color: #00aa13;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .card {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      cursor: pointer;
+      animation: fadeInUp 0.6s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.15);
+    }
+    .card-img {
+      width: 100%;
+      height: 130px;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img i {
+      font-size: 40px;
+      opacity: 0.5;
+      margin-right: 6px;
+    }
+    .card-body {
+      padding: 12px 14px;
+    }
+    .card-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #222;
+      margin-bottom: 4px;
+    }
+    .card-price {
+      color: #00aa13;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .card-seller {
+      font-size: 12px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-seller i {
+      color: #00aa13;
+      font-size: 12px;
+    }
+
+    /* ===== PAGE JUAL ===== */
+    .jual-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      padding: 30px;
+      text-align: center;
+    }
+    .jual-icon {
+      font-size: 80px;
+      color: #00aa13;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+    .jual-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1b5e20;
+      margin-bottom: 10px;
+    }
+    .jual-desc {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .btn-jual {
+      background: #00aa13;
+      color: white;
+      padding: 18px 40px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(0,170,19,0.4);
+      transition: all 0.3s;
+      animation: pulse 2s infinite;
+    }
+    .btn-jual:hover {
+      background: #00880c;
+      transform: scale(1.04);
+      box-shadow: 0 14px 36px rgba(0,170,19,0.5);
+    }
+
+    /* ===== BOTTOM NAV (untuk halaman pembeli) ===== */
+    .bottom-nav {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.05);
+      border-top: 1px solid #eee;
+      z-index: 100;
+    }
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #888;
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .bottom-nav-item i {
+      font-size: 20px;
+    }
+    .bottom-nav-item.active {
+      color: #00aa13;
+      font-weight: 600;
+    }
+    .bottom-nav-item:hover {
+      color: #00aa13;
+    }
+
+    /* Back button */
+    .back-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #00aa13;
+      cursor: pointer;
+      padding: 6px;
+      margin-right: 8px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container" id="appContainer">
+
+    <!-- ==================== HALAMAN 1: LOGIN ==================== -->
+    <div class="page active" id="pageLogin">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-logo">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <div class="auth-title">Masuk ke GameStore</div>
+          <div class="auth-subtitle">Jual beli akun game terpercaya</div>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Email" id="loginEmail">
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Password" id="loginPassword">
+          </div>
+          <button class="btn btn-primary" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> &nbsp;Masuk</button>
+          <div class="auth-link">
+            Belum punya akun? <a onclick="navigateTo('pageRegister')">Daftar di sini</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== HALAMAN 2: REGISTRASI ==================== -->
+    <div class="page" id="pageRegister">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-logo">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="auth-title">Daftar Akun</div>
+          <div class="auth-subtitle">Bergabung dan dapatkan akun impian</div>
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Nama Lengkap" id="regName">
+          </div>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Email" id="regEmail">
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Password" id="regPassword">
+          </div>
+          <button class="btn btn-primary" onclick="handleRegister()"><i class="fas fa-check-circle"></i> &nbsp;Daftar</button>
+          <div class="auth-link">
+            Sudah punya akun? <a onclick="navigateTo('pageLogin')">Masuk</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== HALAMAN 3: PAGE PEMBELI (HOME) ==================== -->
+    <div class="page" id="pageHome">
+      <div class="navbar">
+        <div class="navbar-brand">
+          <i class="fas fa-gamepad"></i> GameStore
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="navbar-menu">
+            <button class="nav-game-btn active" onclick="filterGame('all', this)">Semua</button>
+            <button class="nav-game-btn" onclick="filterGame('pubgm', this)">PUBGM</button>
+            <button class="nav-game-btn" onclick="filterGame('codm', this)">CODM</button>
+            <button class="nav-game-btn" onclick="filterGame('ff', this)">FF</button>
+            <button class="nav-game-btn" onclick="filterGame('ml', this)">ML</button>
+          </div>
+          <button onclick="handleLogout()" title="Keluar" style="background:none; border:none; font-size:20px; color:#00aa13; cursor:pointer; padding:6px;">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Header sampul utama -->
+      <div class="cover-header" id="homeCoverHeader">
+        <div class="cover-text">
+          <img src="header.jpg" style="width:110%; height:110%; object-fit: cover;">
+        </div>
+      </div>
+      <div class="content">
+        <div class="section-title"><i class="fas fa-bolt"></i> Akun Jual Cepat</div>
+        <div class="card-grid" id="homeCardGrid">
+          <!-- Diisi oleh JS -->
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="bottom-nav-item active" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
+      </div>
+    </div>
+
+    <!-- ==================== HALAMAN 4-7: GAME PAGES ==================== -->
+    <!-- PUBGM Page -->
+    <div class="page" id="pagePubg">
+      <div class="navbar">
+        <button class="back-btn" onclick="navigateTo('pageHome')"><i class="fas fa-arrow-left"></i></button>
+        <div class="navbar-brand"><i class="fas fa-crosshairs"></i> PUBG Mobile</div>
+        <div style="width:30px;"></div>
+      </div>
+      <div class="cover-header" id="pubgCoverHeader">
+        <img src="pubg.jpg" style="width:110%; height:110%; object-fit: cover;">
+      </div>
+      <div class="content">
+        <div class="section-title"><i class="fas fa-list"></i> Daftar Akun PUBGM</div>
+        <div class="card-grid" id="pubgCardGrid"></div>
+      </div>
+      <div class="bottom-nav">
+        <div class="bottom-nav-item" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="bottom-nav-item active" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
+      </div>
+    </div>
+
+    <!-- CODM Page -->
+    <div class="page" id="pageCodm">
+      <div class="navbar">
+        <button class="back-btn" onclick="navigateTo('pageHome')"><i class="fas fa-arrow-left"></i></button>
+        <div class="navbar-brand"><i class="fas fa-skull"></i> Call of Duty Mobile</div>
+        <div style="width:30px;"></div>
+      </div>
+      <div class="cover-header" id="codmCoverHeader">
+        <img src="codm.jpg" style="width:110%; height:110%; object-fit: cover;">
+      </div>
+      <div class="content">
+        <div class="section-title"><i class="fas fa-list"></i> Daftar Akun CODM</div>
+        <div class="card-grid" id="codmCardGrid"></div>
+      </div>
+      <div class="bottom-nav">
+        <div class="bottom-nav-item" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
+        <div class="bottom-nav-item active" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
+      </div>
+    </div>
+
+    <!-- Free Fire Page -->
+    <div class="page" id="pageFf">
+      <div class="navbar">
+        <button class="back-btn" onclick="navigateTo('pageHome')"><i class="fas fa-arrow-left"></i></button>
+        <div class="navbar-brand"><i class="fas fa-fire"></i> Free Fire</div>
+        <div style="width:30px;"></div>
+      </div>
+      <div class="cover-header" id="ffCoverHeader">
+        <img src="ff.jpg" style="width:110%; height:110%; object-fit: cover;">
+      </div>
+      <div class="content">
+        <div class="section-title"><i class="fas fa-list"></i> Daftar Akun Free Fire</div>
+        <div class="card-grid" id="ffCardGrid"></div>
+      </div>
+      <div class="bottom-nav">
+        <div class="bottom-nav-item" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
+        <div class="bottom-nav-item active" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
+      </div>
+    </div>
+
+    <!-- Mobile Legends Page -->
+    <div class="page" id="pageMl">
+      <div class="navbar">
+        <button class="back-btn" onclick="navigateTo('pageHome')"><i class="fas fa-arrow-left"></i></button>
+        <div class="navbar-brand"><i class="fas fa-mobile-alt"></i> Mobile Legends</div>
+        <div style="width:30px;"></div>
+      </div>
+      <div class="cover-header" id="mlCoverHeader">
+        <img src="ml.jpg" style="width:110%; height:110%; object-fit: cover;">
+      </div>
+      <div class="content">
+        <div class="section-title"><i class="fas fa-list"></i> Daftar Akun Mobile Legends</div>
+        <div class="card-grid" id="mlCardGrid"></div>
+      </div>
+      <div class="bottom-nav">
+        <div class="bottom-nav-item" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item active" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
+      </div>
+    </div>
+
+    <!-- ==================== HALAMAN 8: PAGE JUAL ==================== -->
+    <div class="page" id="pageJual">
+      <div class="navbar">
+        <button class="back-btn" onclick="navigateTo('pageHome')"><i class="fas fa-arrow-left"></i></button>
+        <div class="navbar-brand"><i class="fas fa-tag"></i> Jual Akun</div>
+        <div style="width:30px;"></div>
+      </div>
+      <div class="jual-container">
+        <div class="jual-icon"><i class="fas fa-hand-holding-usd"></i></div>
+        <div class="jual-title">Jual Akun Kamu Sekarang!</div>
+        <div class="jual-desc">Dapatkan uang dari akun game yang sudah tidak terpakai. Proses cepat dan aman.</div>
+        <a class="btn-jual" href="https://forms.google.com/your-google-form-link" target="_blank" id="gformLink">
+          <i class="fas fa-paper-plane"></i> Jual Akun Sekarang
+        </a>
+        <p style="margin-top:20px; font-size:12px; color:#999;">*Link menuju Google Form</p>
+      </div>
+      <div class="bottom-nav">
+        <div class="bottom-nav-item" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
+        <div class="bottom-nav-item active" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+    // ===== MASUKKAN URL GOOGLE APPS SCRIPT DI SINI =====
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbySqL57YgmJUr7p6k2uQEPuQ7JlAaHZXir6AmCnnvILTi3DvfnydsSzWhhZYfInPxvW/exec'; 
+
+    let allAccounts = []; // Akan diisi dari Google Sheets
+
+    // Fungsi menampilkan loading (opsional tapi disarankan)
+    function showLoading(btnElement, text) {
+      const originalText = btnElement.innerHTML;
+      btnElement.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${text}...`;
+      btnElement.disabled = true;
+      return originalText;
+    }
+
+    function hideLoading(btnElement, originalText) {
+      btnElement.innerHTML = originalText;
+      btnElement.disabled = false;
+    }
+
+    // ===== AMBIL DATA DARI GOOGLE SHEETS (GET) =====
+    async function fetchAccountsFromSheet() {
+      try {
+        const response = await fetch(SCRIPT_URL + "?action=getAccounts");
+        const data = await response.json();
+        
+        if (!data.error) {
+          allAccounts = data;
+          renderAllGamePages(); // Render ulang setelah data masuk
+        } else {
+          console.error("Error dari server:", data.error);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data:", error);
+      }
+    }
+
+    // ===== FUNGSI LOGIN (POST) =====
+    async function handleLogin() {
+      const emailInput = document.getElementById('loginEmail');
+      const passInput = document.getElementById('loginPassword');
+      const btn = document.querySelector('#pageLogin .btn-primary');
+      
+      const email = emailInput.value.trim();
+      const password = passInput.value.trim();
+
+      if (!email || !password) {
+        alert('Mohon isi email dan password dengan lengkap.');
+        return;
+      }
+
+      const originalBtnText = showLoading(btn, 'Memeriksa');
+
+      try {
+        const response = await fetch(SCRIPT_URL + "?action=login", {
+          method: 'POST',
+          // RAHASIA ANTI FAILED TO FETCH: Gunakan text/plain
+          headers: { 'Content-Type': 'text/plain' }, 
+          body: JSON.stringify({ email, password })
+        });
+        
+        const result = await response.json();
+
+        if (result.success) {
+          localStorage.setItem('gameStoreLoggedInUser', result.nama);
+          alert(`Login berhasil! Selamat datang, ${result.nama}.`);
+          navigateTo('pageHome');
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan jaringan.');
+        console.error(error);
+      } finally {
+        hideLoading(btn, originalBtnText);
+      }
+    }
+
+    // ===== FUNGSI REGISTER & OTP (POST) =====
+    async function handleRegister() {
+      const nameInput = document.getElementById('regName');
+      const emailInput = document.getElementById('regEmail');
+      const passInput = document.getElementById('regPassword');
+      const btn = document.querySelector('#pageRegister .btn-primary');
+
+      const nama = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passInput.value.trim();
+
+      if (!nama || !email || !password) {
+        alert('Semua kolom harus diisi.');
+        return;
+      }
+
+      const originalBtnText = showLoading(btn, 'Memproses');
+
+      try {
+        // TAHAP 1: Minta OTP
+        const response = await fetch(SCRIPT_URL + "?action=registerRequest", {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ nama, email, password })
+        });
+        
+        const result = await response.json();
+
+        if (result.success) {
+          // TAHAP 2: Masukkan OTP menggunakan prompt
+          const otp = prompt("Kode OTP telah dikirim ke email Anda. Masukkan 6 digit kode OTP:");
+          
+          if (otp) {
+            const originalBtnText2 = showLoading(btn, 'Verifikasi OTP');
+            
+            // Verifikasi OTP ke server
+            const otpResponse = await fetch(SCRIPT_URL + "?action=verifyOTP", {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain' },
+              body: JSON.stringify({ email, otp })
+            });
+
+            const otpResult = await otpResponse.json();
+
+            if (otpResult.success) {
+              alert('Registrasi berhasil! Silakan login dengan akun Anda.');
+              nameInput.value = ''; emailInput.value = ''; passInput.value = '';
+              navigateTo('pageLogin');
+            } else {
+              alert(otpResult.message);
+            }
+            hideLoading(btn, originalBtnText2);
+          } else {
+            alert('Registrasi dibatalkan karena OTP tidak dimasukkan.');
+          }
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan jaringan.');
+        console.error(error);
+      } finally {
+        hideLoading(btn, originalBtnText);
+      }
+    }
+
+    // ===== SISA KODE (UI & RENDER) =====
+    function getAccountsByGame(game) {
+      if (game === 'all') return allAccounts;
+      return allAccounts.filter(a => a.game === game);
+    }
+
+    function createCardHtml(acc) {
+      const imgContent = acc.img 
+        ? `<img src="${acc.img}" style="width:100%; height:100%; object-fit:cover;" alt="${acc.title}">`
+        : '<i class="fas fa-image"></i> <span>Foto</span>';
+    
+      return `
+        <div class="card animate-fade-in-up">
+          <div class="card-img">${imgContent}</div>
+          <div class="card-body">
+            <div class="card-title">${acc.title}</div>
+            <div class="card-price">${acc.price}</div>
+            <div class="card-desc">${acc.desc}</div>
+            <div class="card-seller"><i class="fas fa-user-circle"></i> ${acc.seller}</div>
+          </div>
+        </div>`;
+    }
+
+    function renderCards(containerId, game) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const accounts = getAccountsByGame(game);
+      container.innerHTML = accounts.map(acc => createCardHtml(acc)).join('');
+    }
+
+    function renderAllGamePages() {
+      renderCards('homeCardGrid', 'all');
+      renderCards('pubgCardGrid', 'pubgm');
+      renderCards('codmCardGrid', 'codm');
+      renderCards('ffCardGrid', 'ff');
+      renderCards('mlCardGrid', 'ml');
+    }
+
+    function filterGame(game, btn) {
+      renderCards('homeCardGrid', game);
+      document.querySelectorAll('#pageHome .nav-game-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) {
+        target.classList.add('active');
+        target.scrollTop = 0;
+        window.scrollTo(0,0);
+      }
+      document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('active'));
+      const mapping = {'pageHome': 0, 'pagePubg': 1, 'pageCodm': 2, 'pageFf': 3, 'pageMl': 4, 'pageJual': 5};
+      const bottomItems = document.querySelectorAll('.bottom-nav-item');
+      if (mapping[pageId] !== undefined && bottomItems.length > mapping[pageId]) {
+        bottomItems[mapping[pageId]].classList.add('active');
+      }
+    }
+
+    function handleLogout() {
+      if (confirm('Apakah Anda yakin ingin keluar?')) {
+        localStorage.removeItem('gameStoreLoggedInUser');
+        navigateTo('pageLogin');
+      }
+    }
+
+    // Inisialisasi
+    document.addEventListener('DOMContentLoaded', function() {
+      // Panggil data dari Sheet saat web pertama kali dibuka
+      fetchAccountsFromSheet(); 
+      
+      const loggedIn = localStorage.getItem('gameStoreLoggedInUser');
+      if(loggedIn) {
+        navigateTo('pageHome');
+      } else {
+        navigateTo('pageLogin');
+      }
+      
+      document.querySelectorAll('#pageHome .nav-game-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const game = this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+          if (game) filterGame(game, this);
+        });
+      });
+      document.getElementById('gformLink').setAttribute('href', 'https://docs.google.com/forms/d/e/1FAIpQLSfHQ4tyeo9SOHwgEBBI_kU21I0ohP704Sryg7dozPputctjxw/viewform?usp=dialog');
+    });
+  </script>
+</body>
+</html>
