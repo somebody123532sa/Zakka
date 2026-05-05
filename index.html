@@ -8,14 +8,6 @@
   <!-- Font Awesome 6 untuk ikon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-
-    .card-grid {
-      display: grid;
-      /* Kode ajaib ini akan otomatis membagi kolom sesuai ukuran layar */
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 15px;
-      padding-bottom: 20px; /* Memberi jarak agar tidak mentok dengan bottom-nav */
-    }
   
     * {
       margin: 0;
@@ -356,8 +348,10 @@
     }
     .card-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      /* Kode ajaib ini akan otomatis membagi kolom sesuai ukuran layar */
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px;
+      padding-bottom: 20px; /* Memberi jarak agar tidak mentok dengan bottom-nav */
     }
     .card {
       background: white;
