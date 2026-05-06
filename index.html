@@ -583,11 +583,10 @@
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <div class="navbar-menu">
-            <button class="nav-game-btn active" onclick="filterGame('all', this)">Semua</button>
-            <button class="nav-game-btn" onclick="filterGame('pubgm', this)">PUBGM</button>
-            <button class="nav-game-btn" onclick="filterGame('codm', this)">CODM</button>
-            <button class="nav-game-btn" onclick="filterGame('ff', this)">FF</button>
-            <button class="nav-game-btn" onclick="filterGame('ml', this)">ML</button>
+            <button class="nav-game-btn" onclick="navigateTo('pubgm')">PUBGM</button>
+            <button class="nav-game-btn" onclick="navigateTo('codm')">CODM</button>
+            <button class="nav-game-btn" onclick="navigateTo('ff')">FF</button>
+            <button class="nav-game-btn" onclick="navigateTo('ml')">ML</button>
           </div>
           <button onclick="handleLogout()" title="Keluar" style="background:none; border:none; font-size:20px; color:#00aa13; cursor:pointer; padding:6px;">
             <i class="fas fa-sign-out-alt"></i>
