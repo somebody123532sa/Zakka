@@ -962,15 +962,7 @@
       } else {
         navigateTo('pageLogin');
       }
-      
-      document.querySelectorAll('#pageHome .nav-game-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const game = this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
-          if (game) filterGame(game, this);
-        });
-      });
-      document.getElementById('gformLink').setAttribute('href', 'https://docs.google.com/forms/d/e/1FAIpQLSfHQ4tyeo9SOHwgEBBI_kU21I0ohP704Sryg7dozPputctjxw/viewform?usp=sharing&ouid=112858412258761884777');
-    });
+
   </script>
 </body>
 </html>
