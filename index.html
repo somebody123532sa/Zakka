@@ -583,7 +583,7 @@
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <div class="navbar-menu">
-            <button class="nav-game-btn" onclick="navigateTo('pubgm')">PUBGM</button>
+            <button class="nav-game-btn" onclick="filterGame('pubgm', this)">PUBGM</button>
             <button class="nav-game-btn" onclick="navigateTo('codm')">CODM</button>
             <button class="nav-game-btn" onclick="navigateTo('ff')">FF</button>
             <button class="nav-game-btn" onclick="navigateTo('ml')">ML</button>
@@ -658,7 +658,7 @@
         <div class="bottom-nav-item" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
         <div class="bottom-nav-item" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
         <div class="bottom-nav-item active" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
-        <div class="bottom-nav-item" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageFf' ya)"><i class="fas fa-fire"></i><span>FF</span></div>
         <div class="bottom-nav-item" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
         <div class="bottom-nav-item" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
       </div>
@@ -961,6 +961,11 @@
       } else {
         navigateTo('pageLogin');
       }
+      document.querySelectorAll('#pageHome .nav-game-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const game = this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+          if (game) filterGame(game, this);
+      
     });
   </script>
 </body>
