@@ -515,7 +515,7 @@
       border: none;
       border-top: 1px solid #eee;
       margin: 16px 0;
-      
+        }
       /* CSS Modal Pop-up Pembayaran */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -535,7 +535,6 @@
     
     @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
       
-    }
   </style>
 </head>
 <body>
@@ -918,12 +917,41 @@
     }
 
 // ===== FUNGSI POPUP PEMBAYARAN & EMAIL =====
+    // Deklarasi variabel timer wajib ada di luar fungsi
     let paymentTimeout;
     let countdownInterval;
 
+    function createCardHtml(acc) {
+      const imgContent = acc.img 
+        ? `<img src="${acc.img}" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;" alt="${acc.title}">`
+        : '<i class="fas fa-image"></i> <span>Foto</span>';
+    
+      // JURUS ANTI ERROR: Tambahkan replace untuk mengamankan tanda kutip
+      const accData = encodeURIComponent(JSON.stringify(acc)).replace(/'/g, "%27");
+      
+      return `
+        <div class="card animate-fade-in-up" onclick="openPaymentModal('${accData}')" style="cursor: pointer;">
+          <div class="card-img">${imgContent}</div>
+          <div class="card-body">
+            <div class="card-title">${acc.title}</div>
+            <div class="card-price">${acc.price}</div>
+            <div class="card-desc">${acc.desc}</div>
+            <div class="card-seller"><i class="fas fa-user-circle"></i> ${acc.seller}</div>
+          </div>
+        </div>`;
+    }
+
+    function renderCards(containerId, game) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const accounts = getAccountsByGame(game);
+      container.innerHTML = accounts.map(acc => createCardHtml(acc)).join('');
+    }
+
     function openPaymentModal(accDataEncoded) {
-      // Ambil data akun yang di-klik
-      const acc = JSON.parse(decodeURIComponent(accDataEncoded));
+      // Ambil data akun yang di-klik (Kembalikan tanda kutipnya)
+      const decodedData = decodeURIComponent(accDataEncoded).replace(/%27/g, "'");
+      const acc = JSON.parse(decodedData);
       
       // Tampilkan harga dan judul di Pop-up
       document.getElementById('modalPrice').innerText = acc.price;
@@ -954,7 +982,7 @@
         
         // Kirim instruksi ke Google Script untuk kirim email
         triggerEmailSending(acc);
-      }, 15000); // 15000 milidetik = 15 detik
+      }, 15000); 
     }
 
     function closePaymentModal() {
@@ -965,7 +993,10 @@
 
     async function triggerEmailSending(acc) {
       const emailPembeli = localStorage.getItem('gameStoreLoggedInEmail');
-      if (!emailPembeli) return; // Jika belum login sempurna, batalkan
+      if (!emailPembeli) {
+        console.error("Email pembeli tidak ditemukan, pastikan sudah login!");
+        return; 
+      }
 
       try {
         await fetch(SCRIPT_URL + "?action=buyAccount", {
@@ -978,12 +1009,11 @@
             desc: acc.desc 
           })
         });
-        console.log("Email struk dan akun berhasil dikirim ke", emailPembeli);
+        console.log("Struk berhasil diproses ke", emailPembeli);
       } catch (error) {
         console.error("Gagal mengirim email", error);
       }
     }
-  
       
     function createCardHtml(acc) {
       const imgContent = acc.img 
