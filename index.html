@@ -657,7 +657,7 @@
         <div class="bottom-nav-item" onclick="navigateTo('pageHome')"><i class="fas fa-home"></i><span>Home</span></div>
         <div class="bottom-nav-item" onclick="navigateTo('pagePubg')"><i class="fas fa-crosshairs"></i><span>PUBGM</span></div>
         <div class="bottom-nav-item active" onclick="navigateTo('pageCodm')"><i class="fas fa-skull"></i><span>CODM</span></div>
-        <div class="bottom-nav-item" onclick="navigateTo('pageFf' ya)"><i class="fas fa-fire"></i><span>FF</span></div>
+        <div class="bottom-nav-item" onclick="navigateTo('pageFf')"><i class="fas fa-fire"></i><span>FF</span></div>
         <div class="bottom-nav-item" onclick="navigateTo('pageMl')"><i class="fas fa-mobile-alt"></i><span>ML</span></div>
         <div class="bottom-nav-item" onclick="navigateTo('pageJual')"><i class="fas fa-tag"></i><span>Jual</span></div>
       </div>
@@ -885,24 +885,23 @@
     // ===== SISA KODE (UI & RENDER) =====
 // ===== SISA KODE (UI & RENDER) =====
     function getAccountsByGame(game) {
-      
-      // 1. JIKA HALAMAN HOME ('all')
+      // 1. JIKA HALAMAN HOME ('all') - KHUSUS FAST SALE
       if (game === 'all') {
-        // Di Home, HANYA tampilkan kategori akun yang dijual cepat (ff1, ml1, dll)
         const allowedGames = ['pubgm1', 'codm1', 'ff1', 'ml1'];
-        return allAccounts.filter(acc => allowedGames.includes(acc.game));
+        // Kebal huruf besar/kecil
+        return allAccounts.filter(acc => allowedGames.includes(String(acc.game).toLowerCase().trim()));
       }
       
-      // 2. JIKA HALAMAN SPESIFIK GAME (Menerima Array seperti ['ff', 'ff1'])
+      // 2. JIKA HALAMAN SPESIFIK (Menerima Array seperti ['ff', 'ff1'])
       if (Array.isArray(game)) {
-        // Tampilkan semua akun yang kategorinya ada di dalam daftar array tersebut
-        return allAccounts.filter(acc => game.includes(acc.game));
+        const lowerCaseGameArray = game.map(g => String(g).toLowerCase().trim());
+        return allAccounts.filter(acc => lowerCaseGameArray.includes(String(acc.game).toLowerCase().trim()));
       }
       
-      // 3. JIKA HANYA 1 KATEGORI BIASA (Misal hanya 'ff')
-      return allAccounts.filter(acc => acc.game === game);
+        // 3. JIKA HANYA 1 KATEGORI BIASA (Teks String biasa)
+      return allAccounts.filter(acc => String(acc.game).toLowerCase().trim() === String(game).toLowerCase().trim());
     }
-
+      
     function createCardHtml(acc) {
       const imgContent = acc.img 
         ? `<img src="${acc.img}" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;" alt="${acc.title}">`
@@ -928,7 +927,10 @@
     }
 
     function renderAllGamePages() {
+      // Merender halaman Home (Hanya Fast Sale)
       renderCards('homeCardGrid', 'all');
+      
+      // Merender halaman Game Spesifik (Gabungan Akun Biasa + Fast Sale)
       renderCards('pubgCardGrid', ['pubgm', 'pubgm1']);
       renderCards('codmCardGrid', ['codm', 'codm1']);
       renderCards('ffCardGrid', ['ff', 'ff1']);
