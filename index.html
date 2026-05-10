@@ -883,12 +883,23 @@
     }
 
     // ===== SISA KODE (UI & RENDER) =====
+// ===== SISA KODE (UI & RENDER) =====
     function getAccountsByGame(game) {
+      
+      // 1. JIKA HALAMAN HOME ('all')
       if (game === 'all') {
-        // Hanya tampilkan akun dengan game: PUBGM, CODM, FF, ML
+        // Di Home, HANYA tampilkan kategori akun yang dijual cepat (ff1, ml1, dll)
         const allowedGames = ['pubgm1', 'codm1', 'ff1', 'ml1'];
         return allAccounts.filter(acc => allowedGames.includes(acc.game));
       }
+      
+      // 2. JIKA HALAMAN SPESIFIK GAME (Menerima Array seperti ['ff', 'ff1'])
+      if (Array.isArray(game)) {
+        // Tampilkan semua akun yang kategorinya ada di dalam daftar array tersebut
+        return allAccounts.filter(acc => game.includes(acc.game));
+      }
+      
+      // 3. JIKA HANYA 1 KATEGORI BIASA (Misal hanya 'ff')
       return allAccounts.filter(acc => acc.game === game);
     }
 
