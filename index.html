@@ -583,10 +583,11 @@
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <div class="navbar-menu">
+            <button class="nav-game-btn active" onclick="filterGame('all', this)">Semua</button>
             <button class="nav-game-btn" onclick="filterGame('pubgm', this)">PUBGM</button>
-            <button class="nav-game-btn" onclick="navigateTo('codm')">CODM</button>
-            <button class="nav-game-btn" onclick="navigateTo('ff')">FF</button>
-            <button class="nav-game-btn" onclick="navigateTo('ml')">ML</button>
+            <button class="nav-game-btn" onclick="filterGame('codm', this)">CODM</button>
+            <button class="nav-game-btn" onclick="filterGame('ff', this)">FF</button>
+            <button class="nav-game-btn" onclick="filterGame('ml', this)">ML</button>
           </div>
           <button onclick="handleLogout()" title="Keluar" style="background:none; border:none; font-size:20px; color:#00aa13; cursor:pointer; padding:6px;">
             <i class="fas fa-sign-out-alt"></i>
@@ -961,13 +962,16 @@
       } else {
         navigateTo('pageLogin');
       }
+      
+      
       document.querySelectorAll('#pageHome .nav-game-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const game = this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
           if (game) filterGame(game, this);
-      
-    });
-        
+        });
+      });
+      document.getElementById('gformLink').setAttribute('href', 'https://docs.google.com/forms/d/e/1FAIpQLSfHQ4tyeo9SOHwgEBBI_kU21I0ohP704Sryg7dozPputctjxw/viewform?usp=dialog');
+    });   
   </script>
 </body>
 </html>
