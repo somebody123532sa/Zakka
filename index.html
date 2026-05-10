@@ -757,26 +757,6 @@
       </div>
     </div>
     
-    <div id="paymentModal" class="modal-overlay">
-      <div class="modal-content">
-        <button class="close-modal" onclick="closePaymentModal()">&times;</button>
-      
-        <div id="paymentStep1">
-          <h2 id="modalPrice" style="color: #007bff; margin-bottom: 5px;">Rp 0</h2>
-          <p id="modalTitle" style="font-weight: bold; color: #333;">Nama Akun</p>
-          <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS Dummy" class="qris-img">
-          <div class="payment-desc">💡 Pembayaran dapat dilakukan lewat DANA, M-Banking, Indomaret, Alfamart, dll.</div>
-          <div class="timer-text">Waktu: <span id="paymentTimer">15</span> detik</div>
-        </div>
-
-        <div id="paymentStep2" style="display:none;">
-          <i class="fas fa-check-circle success-icon"></i>
-          <h2>Pembayaran Berhasil!</h2>
-          <p style="margin: 15px 0; color: #555;">Detail akun dan instruksi login telah dikirimkan ke email Anda.</p>
-          <button class="btn-primary" style="width: 100%; padding: 12px; border-radius: 10px; border: none; background: #007bff; color: white; font-weight: bold;" onclick="closePaymentModal()">Selesai</button>
-        </div>
-      </div>
-    </div>
 <script>
     // ===== MASUKKAN URL GOOGLE APPS SCRIPT DI SINI =====
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyS-ZMCBbM5UkmHrlsV2m9NRw5p7Gl00l_im5fvTqgI2P6anDDE_iVheECvL8zTTRe/exec'; 
@@ -1094,5 +1074,27 @@
       document.getElementById('gformLink').setAttribute('href', 'https://docs.google.com/forms/d/e/1FAIpQLSfHQ4tyeo9SOHwgEBBI_kU21I0ohP704Sryg7dozPputctjxw/viewform?usp=dialog');
     });   
   </script>
+    
+    <div id="paymentModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closePaymentModal()">&times;</button>
+      
+        <div id="paymentStep1">
+          <h2 id="modalPrice" style="color: #007bff; margin-bottom: 5px;">Rp 0</h2>
+          <p id="modalTitle" style="font-weight: bold; color: #333;">Nama Akun</p>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS Dummy" class="qris-img">
+          <div class="payment-desc">💡 Pembayaran dapat dilakukan lewat DANA, M-Banking, Indomaret, Alfamart, dll.</div>
+          <div class="timer-text">Waktu: <span id="paymentTimer">15</span> detik</div>
+        </div>
+
+        <div id="paymentStep2" style="display:none;">
+          <i class="fas fa-check-circle success-icon"></i>
+          <h2>Pembayaran Berhasil!</h2>
+          <p style="margin: 15px 0; color: #555;">Detail akun dan instruksi login telah dikirimkan ke email Anda.</p>
+          <button class="btn-primary" style="width: 100%; padding: 12px; border-radius: 10px; border: none; background: #007bff; color: white; font-weight: bold;" onclick="closePaymentModal()">Selesai</button>
+        </div>
+      </div>
+    </div>
+
 </body>
 </html>
